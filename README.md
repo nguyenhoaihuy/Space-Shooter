@@ -21,3 +21,7 @@
 2. Go to the folder ```cd Space-Shooter```
 
 3. Run the game ```python3 main.py```
+
+## Credit
+
+1. [Tech With Tim](https://www.youtube.com/channel/UC4JX40jDee_tINbkjycV4Sg)
