@@ -7,19 +7,28 @@ from ship import Bullet, Ship
 from player import Player
 from enemy import Enemy
 
+#initialize pygame
+pg.init()
 
+#create screen
 WIN = pg.display.set_mode((WIDTH,HEIGHT))
 pg.display.set_caption("Space Shooter Tutorial")
 
 
+
+#main function
 def main():
     run = True
     clock = pg.time.Clock()
-
+    #set score
+    score = 0
+    #create player
     player = Player(WIDTH//2-PLAYER_WIDTH/2,HEIGHT-100,PLAYER_IMG,500)
+    #enemy
     enemies = []
     enemy_appear_timer = 0
-
+    #font
+    main_font = pg.font.SysFont("comicsans", 50)
     # add random an enemy
     def addEnemy():
         nonlocal enemy_appear_timer
@@ -36,18 +45,26 @@ def main():
         enemy_appear_timer -= 1
     
     # clean all enemy out of window
-    def cleanEnemy():
-        nonlocal enemies
-        enemies = list(filter(lambda enemy: enemy.y < HEIGHT,enemies))
+    def cleanEnemy(): # NO NEED FOR THIS
+        pass
+        #nonlocal enemies
+        #enemies = list(filter(lambda enemy: enemy.y < HEIGHT,enemies))
 
     # main function to redraw all objects
     def redraw_window():
         WIN.blit(BG,(0,0))
         player.move(WIN)
         addEnemy()
+        #draw score and health
+        score_text = main_font.render(f"score: {score}", 1, (255, 255, 255))
+        hp_text = main_font.render(f"health: {player.health}", 1, (255, 255, 255))
+
+        WIN.blit(score_text, (10, 10))
+        WIN.blit(hp_text, (WIDTH - hp_text.get_width() - 10, 10))
+
         for enemy in enemies:
             enemy.move(WIN)
-        cleanEnemy()
+        #cleanEnemy()
         pg.display.update()
 
     while run:
@@ -70,5 +87,27 @@ def main():
             player.x += PLAYER_VELOCITY
         if keys[pg.K_SPACE]:
             player.shoot()
+
+
+
+        for enemy in enemies:
+            if enemy.isCollidedWith(player):
+                player.health -= 10
+                enemies.remove(enemy)
+            for bullet in enemy.bullets:
+                if bullet.isCollidedWith(player):
+                    player.health -= 10
+                    enemy.bullets.remove(bullet)
+            for bullet in player.bullets:
+                if bullet.isCollidedWith(enemy):
+                    score += 1
+                    player.bullets.remove(bullet)
+                    enemies.remove(enemy)
+            if enemy.y > HEIGHT:
+                player.health -= 100
+                enemies.remove(enemy)
+            if player.health <= 0:
+                run = False
+
 
 main()
