@@ -2,6 +2,10 @@
 
 ## Introduction
 
+## OOP Design
+
+![OOP](assets/oop.png)
+
 ## Requirement
 
 1. [Python](https://www.python.org/downloads/)
